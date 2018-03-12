@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰培训React教程</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/main.css">
+</head>
+<body>
+<div class="nav">
+    <div class="logo">
+        
+            珠峰培训React教程
+        
+    </div>
+<ul><li><a href="../index.html">es6</a></li><li><a href="../html/1.async.html">1.async</a></li><li><a href="../html/2.async.html">2.async</a></li><li class="active"><a href="../html/3.async.html">3.async</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="#t0JS异步解决方案的发展流程(三)">JS异步解决方案的发展流程(三)</a></li><li><a href="#t11.实现Promise基本方法">1.实现Promise基本方法</a></li><li><a href="#t22.异步Promise">2.异步Promise</a></li><li><a href="#t33.Promise链式调用">3.Promise链式调用</a><ul><li><a href="#t43.1 resolvePromise">3.1 resolvePromise</a></li></ul></li><li><a href="#t54.then中的方法异步执行">4.then中的方法异步执行</a></li><li><a href="#t65.值的穿透">5.值的穿透</a></li><li><a href="#t76.Promise中的延迟对象">6.Promise中的延迟对象</a></li><li><a href="#t87.resolve接收promise">7.resolve接收promise</a></li><li><a href="#t98.promise测试">8.promise测试</a></li><li><a href="#t109.Promise.all">9.Promise.all</a></li><li><a href="#t1110.Promose.race">10.Promose.race</a></li><li><a href="#t1211.Promise.resolve">11.Promise.resolve</a></li><li><a href="#t1312.Promise.reject">12.Promise.reject</a></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t0JS&#x5F02;&#x6B65;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x7684;&#x53D1;&#x5C55;&#x6D41;&#x7A0B;(&#x4E09;)">JS&#x5F02;&#x6B65;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x7684;&#x53D1;&#x5C55;&#x6D41;&#x7A0B;(&#x4E09;) <a href="#t0JS&#x5F02;&#x6B65;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x7684;&#x53D1;&#x5C55;&#x6D41;&#x7A0B;(&#x4E09;)"> # </a></h2>
+<p>&#x4E3A;&#x4E86;&#x66F4;&#x597D;&#x7684;&#x4E86;&#x89E3;promise&#x5B9E;&#x73B0;,&#x6211;&#x4EEC;&#x4E00;&#x6B65;&#x6B65;&#x6765;&#x5B8C;&#x5584;promise&#x5E93;&#x3002;&#x6211;&#x4EEC;&#x5148;&#x6765;&#x5199;&#x4E00;&#x4E2A;&#x57FA;&#x7840;&#x7528;&#x4F8B;,&#x901A;&#x8FC7;&#x7528;&#x4F8B;&#x6765;&#x770B;promise&#x662F;&#x5982;&#x4F55;&#x5B9E;&#x73B0;&#x7684;&#xFF01;</p>
+<h2 id="t11.&#x5B9E;&#x73B0;Promise&#x57FA;&#x672C;&#x65B9;&#x6CD5;">1.&#x5B9E;&#x73B0;Promise&#x57FA;&#x672C;&#x65B9;&#x6CD5; <a href="#t11.&#x5B9E;&#x73B0;Promise&#x57FA;&#x672C;&#x65B9;&#x6CD5;"> # </a></h2>
+<pre><code>let Promise = require(&apos;./Promise&apos;);
+// Promise&#x662F;&#x4E00;&#x4E2A;&#x7C7B;,&#x9700;&#x8981;&#x4F20;&#x9012;&#x4E00;&#x4E2A;&#x51FD;&#x6570;,&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x6211;&#x4EEC;&#x79F0;&#x4E4B;&#x4E3A;&#x6267;&#x884C;&#x51FD;&#x6570;,&#x51FD;&#x6570;&#x4E2D;&#x6709;&#x4E24;&#x4E2A;&#x53C2;&#x6570;resolve&#x548C;reject&#x4ED6;&#x4EEC;&#x4E5F;&#x662F;&#x51FD;&#x6570;&#xFF0C;&#x8C03;&#x7528;resolve&#x8868;&#x793A;&#x6210;&#x529F;&#xFF0C;&#x8C03;&#x7528;reject&#x8868;&#x793A;&#x5931;&#x8D25;
+let promise = new Promise(function(resolve,reject){
+    // &#x6210;&#x529F;&#x5C31;&#x4E0D;&#x4F1A;&#x518D;&#x8C03;&#x7528;&#x5931;&#x8D25;,&#x9ED8;&#x8BA4;&#x72B6;&#x6001;&#x662F;&#x7B49;&#x5F85;&#x72B6;&#x6001;
+    resolve(&apos;ok&apos;); 
+    reject(&apos;faild&apos;);
+});
+// then&#x662F;&#x539F;&#x578B;&#x4E0A;&#x7684;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;&#x63A5;&#x6536;&#x4E24;&#x4E2A;&#x53C2;&#x6570;&#x5206;&#x522B;&#x662F;&#x6210;&#x529F;&#x7684;&#x56DE;&#x8C03;&#x548C;&#x5931;&#x8D25;&#x7684;&#x56DE;&#x8C03;
+promise.then(function(data){// &#x8C03;&#x7528;resolve&#x540E;&#x4F1A;&#x6267;&#x884C;&#x6210;&#x529F;&#x7684;&#x56DE;&#x8C03;&#xFF0C;&#x8C03;&#x7528;reject&#x540E;&#x4F1A;&#x6267;&#x884C;&#x5931;&#x8D25;&#x7684;&#x56DE;&#x8C03;
+    console.log(data);
+},function(err){
+    console.log(err);
+});
+</code></pre><p>&#x5B9E;&#x73B0;&#x5BF9;&#x5E94;&#x7684;Promise&#x5E93;&#x4EE3;&#x7801;</p>
+<pre><code>function Promise(executor) {
+    // Promise&#x4E2D;&#x9700;&#x8981;&#x63A5;&#x6536;&#x4E00;&#x4E2A;&#x6267;&#x884C;&#x51FD;&#x6570;
+    let self = this;
+    self.status = &apos;pending&apos;; //&#x9ED8;&#x8BA4;&#x662F;pending&#x72B6;&#x6001;
+    self.value = undefined; // &#x6210;&#x529F;&#x7684;&#x539F;&#x56E0;
+    self.reason = undefined; // &#x5931;&#x8D25;&#x7684;&#x539F;&#x56E0;
+    function resolve(value) { // &#x8C03;&#x7528;resolve &#x4F1A;&#x4F20;&#x5165;&#x4E3A;&#x4EC0;&#x4E48;&#x6210;&#x529F;
+        if(self.status === &apos;pending&apos;){ // &#x53EA;&#x6709;&#x518D;pending&#x624D;&#x80FD;&#x8F6C;&#x6362;&#x6210;&#x529F;&#x6001;
+            self.value = value; // &#x5C06;&#x6210;&#x529F;&#x7684;&#x539F;&#x56E0;&#x4FDD;&#x5B58;&#x4E0B;&#x6765;
+            self.status = &apos;resolved&apos;; // &#x72B6;&#x6001;&#x6539;&#x6210;&#x6210;&#x529F;&#x6001; 
+        }
+    }
+    function reject(reason) { // &#x8C03;&#x7528;reject&#x4F1A;&#x4F20;&#x5165;&#x4E3A;&#x4EC0;&#x4E48;&#x5931;&#x8D25;
+        if(self.status === &apos;pending&apos;){
+            self.reason = reason;
+            self.status = &apos;rejected&apos;;
+        }
+    }
+    try {
+        executor(resolve, reject);// executor&#x4E2D;&#x9700;&#x8981;&#x4F20;&#x5165;resolve&#x548C;reject
+    } catch (e) {
+        // &#x5982;&#x679C;executor&#x6267;&#x884C;&#x53D1;&#x751F;&#x5F02;&#x5E38;&#xFF0C;&#x8868;&#x793A;&#x5F53;&#x524D;&#x7684;promise&#x662F;&#x5931;&#x8D25;&#x6001;
+        reject(e);
+    }
+}
+// then&#x4E2D;&#x8981;&#x4F20;&#x5165;&#x6210;&#x529F;&#x7684;&#x56DE;&#x8C03;&#x548C;&#x5931;&#x8D25;&#x7684;&#x56DE;&#x8C03;
+Promise.prototype.then = function(onFufilled,onRejected){
+    let self = this;
+    // &#x5982;&#x679C;&#x8981;&#x662F;&#x6210;&#x529F;&#x5C31;&#x8C03;&#x7528;&#x6210;&#x529F;&#x7684;&#x56DE;&#x8C03;,&#x5E76;&#x5C06;&#x6210;&#x529F;&#x7684;&#x503C;&#x4F20;&#x5165;
+    if(self.status === &apos;resolved&apos;){
+        onFufilled(self.value);
+    }
+    if(self.status === &apos;rejected&apos;){
+        onRejected(self.reason);
+    }
+}
+module.exports = Promise
+</code></pre><h2 id="t22.&#x5F02;&#x6B65;Promise">2.&#x5F02;&#x6B65;Promise <a href="#t22.&#x5F02;&#x6B65;Promise"> # </a></h2>
+<p>&#x5728;new Promise&#x65F6;&#x5185;&#x90E8;&#x53EF;&#x4EE5;&#x5199;&#x5F02;&#x6B65;&#x4EE3;&#x7801;,&#x5E76;&#x4E14;&#x4EA7;&#x751F;&#x7684;&#x5B9E;&#x4F8B;&#x53EF;&#x4EE5;then&#x591A;&#x6B21;</p>
+<pre><code>let Promise = require(&apos;./Promise&apos;);
+let promise = new Promise(function(resolve,reject){
+    setTimeout(function(){
+        resolve(&apos;ok&apos;);
+    },1000)
+});
+// &#x5F53;&#x8C03;&#x7528;then&#x65F6;&#x53EF;&#x80FD;&#x72B6;&#x6001;&#x4F9D;&#x7136;&#x662F;pending&#x72B6;&#x6001;,&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5C06;then&#x4E2D;&#x7684;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x4FDD;&#x7559;&#x8D77;&#x6765;,&#x5F53;&#x8C03;&#x7528;resolve&#x6216;&#x8005;reject&#x65F6;&#x6309;&#x7167;&#x987A;&#x5E8F;&#x6267;&#x884C;
+promise.then(function(data){
+    console.log(data);
+},function(err){
+    console.log(err);
+});
+promise.then(function(data){
+    console.log(data);
+},function(err){
+    console.log(err);
+});
+</code></pre><p>&#x5B9E;&#x73B0;&#x5BF9;&#x5E94;&#x7684;Promise&#x5E93;&#x4EE3;&#x7801;</p>
+<pre><code class="lang-diff">     self.status = &apos;pending&apos;; //&#x9ED8;&#x8BA4;&#x662F;pending&#x72B6;&#x6001;
+     self.value = undefined; // &#x6210;&#x529F;&#x7684;&#x539F;&#x56E0;
+     self.reason = undefined; // &#x5931;&#x8D25;&#x7684;&#x539F;&#x56E0;
+<span class="hljs-addition">+    self.onResolvedCallbacks = []; // &#x6210;&#x529F;&#x56DE;&#x8C03;&#x5B58;&#x653E;&#x7684;&#x5730;&#x65B9;</span>
+<span class="hljs-addition">+    self.onRejectedCallbacks = [];</span>
+     function resolve(value) { // &#x8C03;&#x7528;resolve &#x4F1A;&#x4F20;&#x5165;&#x4E3A;&#x4EC0;&#x4E48;&#x6210;&#x529F;
+         if(self.status <span class="hljs-comment">=== &apos;pending&apos;){ // &#x53EA;&#x6709;&#x518D;pending&#x624D;&#x80FD;&#x8F6C;&#x6362;&#x6210;&#x529F;&#x6001;</span>
+             self.value = value; // &#x5C06;&#x6210;&#x529F;&#x7684;&#x539F;&#x56E0;&#x4FDD;&#x5B58;&#x4E0B;&#x6765;
+             self.status = &apos;resolved&apos;; // &#x72B6;&#x6001;&#x6539;&#x6210;&#x6210;&#x529F;&#x6001; 
+<span class="hljs-addition">+            // &#x4F9D;&#x6B21;&#x6267;&#x884C;&#x6210;&#x529F;&#x7684;&#x56DE;&#x8C03;</span>
+<span class="hljs-addition">+            self.onResolvedCallbacks.forEach(item=&gt;item());</span>
+         }
+     }
+     function reject(reason) { // &#x8C03;&#x7528;reject&#x4F1A;&#x4F20;&#x5165;&#x4E3A;&#x4EC0;&#x4E48;&#x5931;&#x8D25;
+         if(self.status <span class="hljs-comment">=== &apos;pending&apos;){</span>
+             self.reason = reason;
+             self.status = &apos;rejected&apos;;
+<span class="hljs-addition">+            self.onRejectedCallbacks.forEach(item=&gt;item());</span>
+         }
+     }
+Promise.prototype.then = function(onFufilled,onRejected){
+     if(self.status <span class="hljs-comment">=== &apos;rejected&apos;){</span>
+         onRejected(self.reason);
+     }
+<span class="hljs-addition">+    if(self.status === &apos;pending&apos;){</span>
+<span class="hljs-addition">+        // &#x5982;&#x679C;&#x662F;&#x7B49;&#x5F85;&#x6001;,&#x5C31;&#x5C06;&#x6210;&#x529F;&#x548C;&#x5931;&#x8D25;&#x7684;&#x56DE;&#x8C03;&#x653E;&#x5230;&#x6570;&#x7EC4;&#x4E2D;</span>
+<span class="hljs-addition">+        self.onResolvedCallbacks.push(function(){</span>
+<span class="hljs-addition">+            onFufilled(self.value);</span>
+<span class="hljs-addition">+        });</span>
+<span class="hljs-addition">+        self.onRejectedCallbacks.push(function(){</span>
+<span class="hljs-addition">+            onRejected(self.reason);</span>
+<span class="hljs-addition">+        });</span>
+<span class="hljs-addition">+    }</span>
+ }
+ module.exports = Promise
+</code></pre>
+<h2 id="t33.Promise&#x94FE;&#x5F0F;&#x8C03;&#x7528;">3.Promise&#x94FE;&#x5F0F;&#x8C03;&#x7528; <a href="#t33.Promise&#x94FE;&#x5F0F;&#x8C03;&#x7528;"> # </a></h2>
+<p>promise&#x5B9E;&#x73B0;&#x94FE;&#x5F0F;&#x8C03;&#x7528;,&#x8FD4;&#x56DE;&#x7684;&#x5E76;&#x4E0D;&#x662F;this&#x800C;&#x662F;&#x4E00;&#x4E2A;&#x65B0;&#x7684;promise,&#x5982;&#x679C;&#x5F53;&#x524D;promise&#x5DF2;&#x7ECF;&#x8FDB;&#x5165;&#x6210;&#x529F;&#x4E86;&#x7684;&#x56DE;&#x8C03;&#xFF0C;&#x56DE;&#x8C03;&#x4E2D;&#x53D1;&#x751F;&#x4E86;&#x5F02;&#x5E38;&#x5982;&#x679C;&#x8FD4;&#x56DE;&#x7684;&#x4ECD;&#x662F;&#x5F53;&#x524D;&#x7684;promise&#x90A3;&#x4E48;&#x72B6;&#x6001;&#x65E0;&#x6CD5;&#x66F4;&#x6539;&#x5230;&#x5931;&#x8D25;&#x6001;&#xFF01;</p>
+<pre><code>promise.then(function(data){
+    throw Error(&apos;&#x51FA;&#x9519;&#x4E86;&apos;);// &#x5F53;&#x524D;promise&#x5DF2;&#x7ECF;&#x6210;&#x529F;&#x4E86;
+    return &apos;zfpx&apos;
+}).then(null,function(err){ // &#x5982;&#x679C;&#x8FD4;&#x56DE;&#x7684;&#x662F;&#x540C;&#x4E00;&#x4E2A;promise&#x90A3;&#x4E48;&#x8FD8;&#x600E;&#x4E48;&#x8D70;&#x5411;&#x5931;&#x8D25;&#x5462;?&#x6240;&#x4EE5;&#x5FC5;&#x987B;&#x8981;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x65B0;&#x7684;promise
+    console.log(err);
+})
+</code></pre><pre><code>let Promise = require(&apos;./Promise&apos;);
+let promise = new Promise(function(resolve,reject){
+    setTimeout(function(){
+        resolve(&apos;ok&apos;);
+    },1000)
+});
+promise.then(function(data){
+    // &#x5982;&#x679C;&#x8FD4;&#x56DE;&#x7684;&#x662F;&#x4E00;&#x4E2A;&#x666E;&#x901A;&#x7684;&#x503C;&#xFF0C;&#x4F1A;&#x5C06;&#x7ED3;&#x679C;&#x4F20;&#x5165;&#x4E0B;&#x4E00;&#x6B21;then&#x7684;&#x6210;&#x529F;&#x56DE;&#x8C03;&#x4E2D;
+    // &#x5982;&#x679C;&#x53D1;&#x751F;&#x9519;&#x8BEF;&#x4F1A;&#x88AB;&#x4E0B;&#x4E00;&#x6B21;then&#x7684;&#x5931;&#x8D25;&#x56DE;&#x8C03;&#x6355;&#x83B7;
+    // &#x5982;&#x679C;&#x8FD4;&#x56DE;&#x7684;&#x662F;promise&#x770B;&#x8FD9;&#x4E2A;promise&#x662F;&#x6210;&#x529F;&#x8FD8;&#x662F;&#x5931;&#x8D25;,&#x5BF9;&#x5E94;&#x8C03;&#x7528;&#x4E0B;&#x4E00;&#x6B21;&#x7684;then
+    return data+&apos;,no problem&apos;; 
+},function(err){
+    console.log(err);
+}).then(function(data){
+    console.log(data);
+},function(err){
+    console.log(err);
+});
+</code></pre><p>&#x5B9E;&#x73B0;&#x5BF9;&#x5E94;&#x7684;Promise&#x5E93;&#x4EE3;&#x7801;</p>
+<pre><code class="lang-diff"> Promise.prototype.then = function(onFufilled,onRejected){
+     let self = this;
+<span class="hljs-addition">+    let promise2; // promise2&#x4E3A;then&#x8C03;&#x7528;&#x540E;&#x8FD4;&#x56DE;&#x7684;&#x65B0;promise</span>
+     // &#x5982;&#x679C;&#x8981;&#x662F;&#x6210;&#x529F;&#x5C31;&#x8C03;&#x7528;&#x6210;&#x529F;&#x7684;&#x56DE;&#x8C03;,&#x5E76;&#x5C06;&#x6210;&#x529F;&#x7684;&#x503C;&#x4F20;&#x5165;
+     if(self.status <span class="hljs-comment">=== &apos;resolved&apos;){</span>
+<span class="hljs-deletion">-        onFufilled(self.value);</span>
+<span class="hljs-addition">+        promise2 = new Promise(function(resolve,reject){</span>
+<span class="hljs-addition">+            try{</span>
+<span class="hljs-addition">+                // &#x6267;&#x884C;&#x65F6;&#x6709;&#x5F02;&#x5E38;&#x53D1;&#x751F;,&#x9700;&#x8981;&#x5C06;promise2&#x7684;&#x72B6;&#x6001;&#x7F6E;&#x4E3A;&#x5931;&#x8D25;&#x6001;</span>
+<span class="hljs-addition">+                let x = onFufilled(self.value); </span>
+<span class="hljs-addition">+                // x&#x4E3A;&#x8FD4;&#x56DE;&#x7684;&#x7ED3;&#x679C;</span>
+<span class="hljs-addition">+                // resolvePromise&#x662F;&#x5BF9;&#x5F53;&#x524D;&#x8FD4;&#x56DE;&#x503C;&#x8FDB;&#x884C;&#x89E3;&#x6790;,&#x901A;&#x8FC7;&#x89E3;&#x6790;&#x8BA9;promise2&#x7684;&#x72B6;&#x6001;&#x8F6C;&#x5316;&#x6210;&#x6210;&#x529F;&#x6001;&#x8FD8;&#x662F;&#x5931;&#x8D25;&#x6001;</span>
+<span class="hljs-addition">+                resolvePromise(promise2,x,resolve,reject);</span>
+<span class="hljs-addition">+            }catch(e){</span>
+<span class="hljs-addition">+                reject(e);</span>
+<span class="hljs-addition">+            }</span>
+<span class="hljs-addition">+        })</span>
+     }
+     if(self.status <span class="hljs-comment">=== &apos;rejected&apos;){</span>
+<span class="hljs-deletion">-        onRejected(self.reason);</span>
+<span class="hljs-addition">+        promise2 = new Promise(function(resolve,reject){</span>
+<span class="hljs-addition">+            try{</span>
+<span class="hljs-addition">+                let x = onRejected(self.reason);</span>
+<span class="hljs-addition">+                resolvePromise(promise2,x,resolve,reject);</span>
+<span class="hljs-addition">+            }catch(e){</span>
+<span class="hljs-addition">+                reject(e)</span>
+<span class="hljs-addition">+            }</span>
+<span class="hljs-addition">+        })</span>
+     }
+     if(self.status <span class="hljs-comment">=== &apos;pending&apos;){</span>
+         // &#x5982;&#x679C;&#x662F;&#x7B49;&#x5F85;&#x6001;,&#x5C31;&#x5C06;&#x6210;&#x529F;&#x548C;&#x5931;&#x8D25;&#x7684;&#x56DE;&#x8C03;&#x653E;&#x5230;&#x6570;&#x7EC4;&#x4E2D;
+<span class="hljs-addition">+       promise2 = new Promise(function(resolve,reject){</span>
+         self.onResolvedCallbacks.push(function(){
+<span class="hljs-deletion">-            onFufilled(self.value);</span>
+<span class="hljs-addition">+                try{</span>
+<span class="hljs-addition">+                    let x = onFufilled(self.value);</span>
+<span class="hljs-addition">+                    resolvePromise(promise2,x,resolve,reject)</span>
+<span class="hljs-addition">+                }catch(e){</span>
+<span class="hljs-addition">+                    reject(e);</span>
+<span class="hljs-addition">+                }</span>
+<span class="hljs-addition">+            })</span>
+         });
+         self.onRejectedCallbacks.push(function(){
+<span class="hljs-deletion">-            onRejected(self.reason);</span>
+<span class="hljs-addition">+                try{</span>
+<span class="hljs-addition">+                    let x = onRejected(self.reason);</span>
+<span class="hljs-addition">+                    resolvePromise(promise2,x,resolve,reject)</span>
+<span class="hljs-addition">+                }catch(e){</span>
+<span class="hljs-addition">+                    reject(e);</span>
+<span class="hljs-addition">+                }</span>
+         });
+<span class="hljs-addition">+       })</span>
+     }
+<span class="hljs-addition">+    return promise2;</span>
+ }
+</code></pre>
+<h3 id="t43.1 resolvePromise">3.1 resolvePromise <a href="#t43.1 resolvePromise"> # </a></h3>
+<p>resolvePromise&#x662F;promise&#x4E2D;&#x6700;&#x91CD;&#x8981;&#x7684;&#x65B9;&#x6CD5;,&#x7528;&#x6765;&#x89E3;&#x6790;then&#x8FD4;&#x56DE;&#x7684;&#x7ED3;&#x679C;</p>
+<pre><code>function resolvePromise(promise2, x, resolve, reject) {
+    // &#x5982;&#x679C;&#x8FD4;&#x56DE;&#x7684;promise&#x548C;then&#x4E2D;&#x8FD4;&#x56DE;&#x7684;promise&#x662F;&#x540C;&#x4E00;&#x4E2A;promise,&#x6839;&#x636E;&#x89C4;&#x8303;&#x8981;&#x62A5;&#x7C7B;&#x578B;&#x9519;&#x8BEF;
+    // &#x76F8;&#x5F53;&#x4E8E;&#x81EA;&#x5DF1;&#x7B49;&#x5F85;&#x81EA;&#x5DF1;&#x5B8C;&#x6210;&#x8FD9;&#x662F;&#x4E0D;&#x79D1;&#x5B66;&#x7684;
+    if (promise2 === x) {
+        return reject(new TypeError(&apos;&#x5FAA;&#x73AF;&#x5F15;&#x7528;&apos;))
+    }
+    if (x !== null &amp;&amp; (typeof x === &apos;object&apos; || typeof x === &apos;function&apos;)) {
+        // &#x5982;&#x679C;&#x662F;&#x5BF9;&#x8C61;&#x53EF;&#x80FD;&#x662F;&#x4E00;&#x4E2A;thenable(&#x5E26;&#x6709;then&#x65B9;&#x6CD5;)&#x5BF9;&#x8C61;
+        let called; // &#x6210;&#x529F;&#x6216;&#x8005;&#x5931;&#x8D25;&#x4E0D;&#x80FD;&#x540C;&#x65F6;&#x8C03;&#x7528;
+        try { // &#x5982;&#x679C;&#x7528;defineProperty&#x5B9A;&#x4E49;&#x7684;then&#x65B9;&#x6CD5;&#x83B7;&#x53D6;&#x65F6;&#x53EF;&#x80FD;&#x4F1A;&#x6709;&#x5F02;&#x5E38;
+            let then = x.then;
+            // &#x5982;&#x679C;then&#x662F;&#x51FD;&#x6570;,&#x8BF4;&#x660E;&#x662F;promise,&#x6211;&#x4EEC;&#x8981;&#x8BA9;promse&#x6267;&#x884C;
+            if (typeof then === &apos;function&apos;) {
+                then.call(x, function (y) {
+                    if (called) return;
+                    called = true;
+                    // &#x5982;&#x679C;resolve&#x7684;&#x7ED3;&#x679C;&#x4F9D;&#x65E7;&#x662F;promise&#x90A3;&#x5C31;&#x7EE7;&#x7EED;&#x89E3;&#x6790;
+                    resolvePromise(promise2, y, resolve, reject);
+                }, function (err) {
+                    if (called) return;
+                    called = true;
+                    reject(err);
+                })
+            } else {
+                // &#x4E0D;&#x662F;&#x51FD;&#x6570;,x&#x5C31;&#x662F;&#x4E00;&#x4E2A;&#x666E;&#x901A;&#x7684;&#x5BF9;&#x8C61;,&#x76F4;&#x63A5;&#x6210;&#x529F;&#x5373;&#x53EF;
+                resolve(x);
+            }
+        } catch (e) {
+            if (called) return;
+            called = true;
+            reject(e);
+        }
+    } else {
+        // &#x662F;&#x666E;&#x901A;&#x503C;&#x76F4;&#x63A5;&#x8C03;&#x7528;&#x6210;&#x529F;
+        resolve(x);
+    }
+}
+</code></pre><h2 id="t54.then&#x4E2D;&#x7684;&#x65B9;&#x6CD5;&#x5F02;&#x6B65;&#x6267;&#x884C;">4.then&#x4E2D;&#x7684;&#x65B9;&#x6CD5;&#x5F02;&#x6B65;&#x6267;&#x884C; <a href="#t54.then&#x4E2D;&#x7684;&#x65B9;&#x6CD5;&#x5F02;&#x6B65;&#x6267;&#x884C;"> # </a></h2>
+<p>&#x4E3A;&#x4E86;&#x4FDD;&#x8BC1;&#x7A0B;&#x5E8F;&#x6267;&#x884C;&#x7684;&#x4E00;&#x81F4;&#x6027;,&#x89C4;&#x8303;&#x4E2D;&#x8981;&#x6C42;then&#x4E2D;&#x7684;&#x65B9;&#x6CD5;&#x5FC5;&#x987B;&#x5728;&#x4E0B;&#x4E00;&#x961F;&#x5217;&#x4E2D;&#x6267;&#x884C;</p>
+<pre><code>     if (self.status === &apos;resolved&apos;) {
+         promise2 = new Promise(function (resolve, reject) {
+-            try {
+-                // &#x6267;&#x884C;&#x65F6;&#x6709;&#x5F02;&#x5E38;&#x53D1;&#x751F;,&#x9700;&#x8981;&#x5C06;promise2&#x7684;&#x72B6;&#x6001;&#x7F6E;&#x4E3A;&#x5931;&#x8D25;&#x6001;
+-                let x = onFufilled(self.value);
+-                // x&#x4E3A;&#x8FD4;&#x56DE;&#x7684;&#x7ED3;&#x679C;
+-                // resolvePromise&#x662F;&#x5BF9;&#x5F53;&#x524D;&#x8FD4;&#x56DE;&#x503C;&#x8FDB;&#x884C;&#x89E3;&#x6790;,&#x901A;&#x8FC7;&#x89E3;&#x6790;&#x8BA9;promise2&#x7684;&#x72B6;&#x6001;&#x8F6C;&#x5316;&#x6210;&#x6210;&#x529F;&#x6001;&#x8FD8;&#x662F;&#x5931;&#x8D25;&#x6001;
+-                resolvePromise(promise2, x, resolve, reject);
+-            } catch (e) {
+-                reject(e);
+-            }
++            setTimeout(function(){
++                try {
++                    // &#x6267;&#x884C;&#x65F6;&#x6709;&#x5F02;&#x5E38;&#x53D1;&#x751F;,&#x9700;&#x8981;&#x5C06;promise2&#x7684;&#x72B6;&#x6001;&#x7F6E;&#x4E3A;&#x5931;&#x8D25;&#x6001;
++                    let x = onFufilled(self.value);
++                    // x&#x4E3A;&#x8FD4;&#x56DE;&#x7684;&#x7ED3;&#x679C;
++                    // resolvePromise&#x662F;&#x5BF9;&#x5F53;&#x524D;&#x8FD4;&#x56DE;&#x503C;&#x8FDB;&#x884C;&#x89E3;&#x6790;,&#x901A;&#x8FC7;&#x89E3;&#x6790;&#x8BA9;promise2&#x7684;&#x72B6;&#x6001;&#x8F6C;&#x5316;&#x6210;&#x6210;&#x529F;&#x6001;&#x8FD8;&#x662F;&#x5931;&#x8D25;&#x6001;
++                    resolvePromise(promise2, x, resolve, reject);
++                } catch (e) {
++                    reject(e);
++                }
++            })
+         })
+     }
+     if (self.status === &apos;rejected&apos;) {
+         promise2 = new Promise(function (resolve, reject) {
+-            try {
+-                let x = onRejected(self.reason);
+-                resolvePromise(promise2, x, resolve, reject);
+-            } catch (e) {
+-                reject(e)
+-            }
++            setTimeout(function(){
++                try {
++                    let x = onRejected(self.reason);
++                    resolvePromise(promise2, x, resolve, reject);
++                } catch (e) {
++                    reject(e)
++                }
++            })
+         })
+     }
+     if (self.status === &apos;pending&apos;) {
+         // &#x5982;&#x679C;&#x662F;&#x7B49;&#x5F85;&#x6001;,&#x5C31;&#x5C06;&#x6210;&#x529F;&#x548C;&#x5931;&#x8D25;&#x7684;&#x56DE;&#x8C03;&#x653E;&#x5230;&#x6570;&#x7EC4;&#x4E2D;
+         promise2 = new Promise(function (resolve, reject) {
+             self.onResolvedCallbacks.push(function () {
+-                try {
+-                    let x = onFufilled(self.value);
+-                    resolvePromise(promise2, x, resolve, reject)
+-                } catch (e) {
+-                    reject(e);
+-                }
++                setTimeout(function(){
++                    try {
++                        let x = onFufilled(self.value);
++                        resolvePromise(promise2, x, resolve, reject)
++                    } catch (e) {
++                        reject(e);
++                    }
++                })
+             });
+             self.onRejectedCallbacks.push(function () {
+-                try {
+-                    let x = onRejected(self.reason);
+-                    resolvePromise(promise2, x, resolve, reject)
+-                } catch (e) {
+-                    reject(e);
+-                }
++                setTimeout(function(){
++                    try {
++                        let x = onRejected(self.reason);
++                        resolvePromise(promise2, x, resolve, reject)
++                    } catch (e) {
++                        reject(e);
++                    }
++                })
+             })
+         });
+     }
+</code></pre><h2 id="t65.&#x503C;&#x7684;&#x7A7F;&#x900F;">5.&#x503C;&#x7684;&#x7A7F;&#x900F; <a href="#t65.&#x503C;&#x7684;&#x7A7F;&#x900F;"> # </a></h2>
+<p>&#x5728;&#x89C4;&#x8303;&#x4E2D;&#x5B9A;&#x4E49;then&#x51FD;&#x6570;&#x53EF;&#x4EE5;&#x4E0D;&#x4F20;&#x53C2;,&#x4E0D;&#x4F20;&#x53C2;&#x9ED8;&#x8BA4;&#x4F1A;&#x5C06;&#x6210;&#x529F;&#x7684;&#x7ED3;&#x679C;&#x548C;&#x5931;&#x8D25;&#x7684;&#x7ED3;&#x679C;&#x7EE7;&#x7EED;&#x5411;&#x4E0B;&#x4F20;&#x9012;</p>
+<pre><code>Promise.prototype.then = function (onFufilled, onRejected) {
++    onFufilled = typeof onFufilled === &apos;function&apos;?onFufilled:function(value){
++        return value
++    }
++    onRejected = typeof onRejected === &apos;function&apos;?onRejected:function(err){
++        throw err
++    }
+
+
+// &#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x987A;&#x4FBF;&#x52A0;&#x4E0A;catch&#x65B9;&#x6CD5;
+Promise.prototype.catch = function(callback){
+    return this.then(null,callback)
+}
+</code></pre><h2 id="t76.Promise&#x4E2D;&#x7684;&#x5EF6;&#x8FDF;&#x5BF9;&#x8C61;">6.Promise&#x4E2D;&#x7684;&#x5EF6;&#x8FDF;&#x5BF9;&#x8C61; <a href="#t76.Promise&#x4E2D;&#x7684;&#x5EF6;&#x8FDF;&#x5BF9;&#x8C61;"> # </a></h2>
+<p>Promise.defer&#x662F;Promise&#x7684;&#x8BED;&#x6CD5;&#x7CD6;</p>
+<pre><code>Promise.deferred = Promise.defer = function(){
+    let dfd = {};
+    dfd.promise = new Promise(function(resolve,reject){
+        dfd.resolve = resolve;
+        dfd.reject = reject;
+    })
+    return dfd
+}
+</code></pre><p>&#x770B;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x8FD9;&#x6837;&#x6765;&#x4F7F;&#x7528;promise&#x4E86;</p>
+<pre><code>function defer(){
+    let defer = Promise.defer();
+    setTimeout(function(){
+        defer.resolve(&apos;ok&apos;)
+    },3000);
+    return defer.promise
+}
+defer().then(function(data){
+    console.log(data);
+})
+</code></pre><h2 id="t87.resolve&#x63A5;&#x6536;promise">7.resolve&#x63A5;&#x6536;promise <a href="#t87.resolve&#x63A5;&#x6536;promise"> # </a></h2>
+<pre><code>let Promise = require(&apos;./3.async&apos;);
+new Promise(function (resolve, reject) {
+    setTimeout(function () {
+        resolve(new Promise(function (resolve, reject) {
+            resolve(&apos;ok&apos;);
+        }))
+    }, 2000)
+}).then(function (data) {
+    console.log(data);
+});
+</code></pre><p>&#x5BF9;resolve&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x6539;&#x5199;</p>
+<pre><code class="lang-diff">function resolve(value) { // &#x8C03;&#x7528;resolve &#x4F1A;&#x4F20;&#x5165;&#x4E3A;&#x4EC0;&#x4E48;&#x6210;&#x529F;
+<span class="hljs-addition">+   if (value !== null &amp;&amp; (typeof value === &apos;object&apos; || typeof value === &apos;function&apos;)) {</span>
+<span class="hljs-addition">+      if(typeof value.then === &apos;function&apos;){</span>
+<span class="hljs-addition">+           // &#x5C06;&#x5F53;&#x524D;promise&#x6210;&#x529F;&#x7684;&#x7ED3;&#x679C;&#x518D;&#x6B21;&#x4F20;&#x56DE;resolve&#x51FD;&#x6570;&#x4E2D;</span>
+<span class="hljs-addition">+           return value.then(resolve,reject);</span>
+<span class="hljs-addition">+       }</span>
+<span class="hljs-addition">+   }</span>
+    if (self.status <span class="hljs-comment">=== &apos;pending&apos;) {</span>
+</code></pre>
+<h2 id="t98.promise&#x6D4B;&#x8BD5;">8.promise&#x6D4B;&#x8BD5; <a href="#t98.promise&#x6D4B;&#x8BD5;"> # </a></h2>
+<p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x7528;promises-aplus-tests&#x5E93;&#x6765;&#x6D4B;&#x8BD5;&#x6211;&#x4EEC;&#x7684;promise&#x662F;&#x5426;&#x7B26;&#x5408;promiseA+&#x89C4;&#x8303;</p>
+<pre><code>$ npm install promises-aplus-tests -g
+promises-aplus-tests Promise.js
+</code></pre><h2 id="t109.Promise.all">9.Promise.all <a href="#t109.Promise.all"> # </a></h2>
+<pre><code>Promise.all = function(promises){
+    let i = 0; // &#x7528;&#x6765;&#x8BA1;&#x6570;&#x6709;&#x591A;&#x5C11;&#x4E2A;promise&#x6267;&#x884C;&#x6210;&#x529F;
+    let result = [];// &#x5B58;&#x653E;&#x7ED3;&#x679C;
+    return new Promise(function(resolve,reject){
+        promises.forEach(function(p,index){
+            p.then(function(data){
+                // &#x5C06;&#x7ED3;&#x679C;&#x548C;&#x6570;&#x7EC4;&#x7684;&#x7D22;&#x5F15;&#x5BF9;&#x5E94;&#x8D77;&#x6765;
+                result[index] = data; 
+                if(++i === promises.length){
+                    // &#x5F53;promise&#x5168;&#x90E8;&#x5B8C;&#x6210;&#x540E;&#x8C03;&#x7528;all&#x65B9;&#x6CD5;&#x6210;&#x529F;&#x7684;&#x56DE;&#x8C03;
+                    resolve(result)
+                }
+            },reject);
+        });
+    });
+}
+</code></pre><h2 id="t1110.Promose.race">10.Promose.race <a href="#t1110.Promose.race"> # </a></h2>
+<p>&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;promise&#x6210;&#x529F;&#x5C31;&#x53D8;&#x4E3A;&#x6210;&#x529F;&#x6001;,&#x5931;&#x8D25;&#x5C31;&#x53D8;&#x4E3A;&#x5931;&#x8D25;&#x6001;</p>
+<pre><code>Promise.race = function (promises) {
+    return new Promise(function (resolve, reject) {
+        promises.forEach(function (p, index) {
+            p.then(function (data) {
+                resolve(data)
+            }, reject);
+        });
+    });
+}
+</code></pre><h2 id="t1211.Promise.resolve">11.Promise.resolve <a href="#t1211.Promise.resolve"> # </a></h2>
+<p>&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6210;&#x529F;&#x7684;promise</p>
+<pre><code>Promise.resolve = function(value){
+    return new Promise(function(resolve,reject){
+        resolve(value);
+    });
+}
+</code></pre><h2 id="t1312.Promise.reject">12.Promise.reject <a href="#t1312.Promise.reject"> # </a></h2>
+<p>&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x5931;&#x8D25;&#x7684;promise</p>
+<pre><code>Promise.reject = function(reason){
+    return new Promise(function(resolve,reject){
+        reject(reason);
+    });
+}
+</code></pre>
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.js"></script>
+<script>
+
+  if (!$('.understand-me').length) {
+    var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+    var count = bar / 26 / 2;
+    var barHeight = $('.page-toc').outerHeight();
+    $('.page-toc li').eq(0).children('a').addClass('red');
+    var arr = [];
+    $("h1,h2,h3,h4,h5,h6").each(function () {
+      arr.push($(this).position().top);
+    });
+    var timer
+    function dark() {
+      clearTimeout(timer)
+       timer = setTimeout(function () {
+       var top = Math.abs($('.page-toc > ul').position().top);
+       var cur = $('.content').scrollTop();
+       for (var i = arr.length; i >= 0; i--) {
+         if (arr[i] <= cur) {
+           break;
+         }
+       }
+       if (i === -1) {
+         i = 0;
+       }
+       $('.page-toc li a').removeClass('red');
+       $('.page-toc li').eq(i).children('a').addClass('red');
+       let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+       $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+     },200)
+    }
+
+    $('.content').on('scroll', dark);
+  }
+</script>
+<style>
+
+    ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent}
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+</body>
+</html>
