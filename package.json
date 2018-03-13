@@ -15,10 +15,10 @@
     "idoc": {
         "theme": "handbook",
         "md": [
+            "0.es6.md",
             "1.async.md",
             "2.async.md",
             "3.async.md",
-            "0.es6.md",
             "4.node.md",
             "5.NodeInstall.md",
             "6.REPL.md",
