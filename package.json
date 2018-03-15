@@ -22,8 +22,8 @@
             "4.node.md",
             "5.nodeInstall.md",
             "6.REPL.md",
-            "7.debugger.md",
-            "8.global.md",
+            "7.global.md",
+            "8.module&NPM.md",
             "9.NodeCore.md"
         ]
     }
