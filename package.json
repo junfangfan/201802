@@ -24,7 +24,10 @@
             "6.REPL.md",
             "7.global.md",
             "8.module&NPM.md",
-            "9.NodeCore.md"
+            "9.NodeCore.md",
+            "10.Encoding.md",
+            "11.Buffer.md",
+            "12.fs.md"
         ]
     }
 }
