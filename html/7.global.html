@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>珠峰培训React教程</title>
+    <title>珠峰培训架构2期</title>
     <link rel="stylesheet" type="text/css" href="../static/css/main.css">
 </head>
 <body>
 <div class="nav">
     <div class="logo">
         
-            珠峰培训React教程
+            珠峰培训架构2期
         
     </div>
 <ul><li><a href="../index.html">0.es6</a></li><li><a href="../html/1.async.html">1.async</a></li><li><a href="../html/2.async.html">2.async</a></li><li><a href="../html/3.async.html">3.async</a></li><li><a href="../html/4.node.html">4.node</a></li><li><a href="../html/5.nodeInstall.html">5.nodeInstall</a></li><li><a href="../html/6.REPL.html">6.REPL</a></li><li class="active"><a href="../html/7.global.html">7.global</a></li><li><a href="../html/8.module&NPM.html">8.module&NPM</a></li><li><a href="../html/9.NodeCore.html">9.NodeCore</a></li><li><a href="../html/10.Encoding.html">10.Encoding</a></li><li><a href="../html/11.Buffer.html">11.Buffer</a></li><li><a href="../html/12.fs.html">12.fs</a></li></ul></div>
@@ -234,47 +234,50 @@ console.log(all);
 
 <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.js"></script>
 <script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+  // if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
 
-  if (!$('.understand-me').length) {
-    var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
-    var count = bar / 26 / 2;
-    var barHeight = $('.page-toc').outerHeight();
-    $('.page-toc li').eq(0).children('a').addClass('red');
-    var arr = [];
-    $("h1,h2,h3,h4,h5,h6").each(function () {
-      arr.push($(this).position().top);
-    });
-    var timer
-    function dark() {
-      clearTimeout(timer)
-       timer = setTimeout(function () {
-       var top = Math.abs($('.page-toc > ul').position().top);
-       var cur = $('.content').scrollTop();
-       for (var i = arr.length; i >= 0; i--) {
-         if (arr[i] <= cur) {
-           break;
-         }
-       }
-       if (i === -1) {
-         i = 0;
-       }
-       $('.page-toc li a').removeClass('red');
-       $('.page-toc li').eq(i).children('a').addClass('red');
-       let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
-       $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
-     },200)
-    }
-
-    $('.content').on('scroll', dark);
-  }
+  //   $('.content').on('scroll', dark);
+  // }
 </script>
 <style>
 
-    ::-webkit-scrollbar{width:14px;}
+    /* ::-webkit-scrollbar{width:14px;}
     ::-webkit-scrollbar-track{background-color:transparent;}
     ::-webkit-scrollbar-thumb{background-color:transparent;}
     ::-webkit-scrollbar-thumb:hover {background-color:transparent}
-    ::-webkit-scrollbar-thumb:active {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
 
     .page-toc > ul .red {
         background: #f3f3f3;
