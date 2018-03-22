@@ -27,7 +27,10 @@
             "9.NodeCore.md",
             "10.Encoding.md",
             "11.Buffer.md",
-            "12.fs.md"
+            "12.fs.md",
+            "13.Stream-1.md",
+            "14.Stream-2.md",
+            "15.Stream-3.md"
         ]
     }
 }
